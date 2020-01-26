@@ -5,9 +5,13 @@ from gym import wrappers
 import argparse
 import pprint as pp
 
+import sys 
+import os
+
 from actorCritic import ActorNetwork, CriticNetwork
 from utilities import OrnsteinUhlenbeckActionNoise
 from ddpg import train
+from test import  test
 
 def main(args):
 
@@ -47,6 +51,8 @@ def main(args):
                 env = wrappers.Monitor(env, args['monitor_dir'], force=True)
 
         train(sess, env, args, actor, critic, actor_noise)
+        
+        # test(sess, env, args, actor, critic, actor_noise)
 
         if args['use_gym_monitor']:
             env.monitor.close()
@@ -57,16 +63,16 @@ if __name__ == '__main__':
     # agent parameters
     parser.add_argument('--actor-lr', help='actor network learning rate', default=0.0001)
     parser.add_argument('--critic-lr', help='critic network learning rate', default=0.001)
-    parser.add_argument('--gamma', help='discount factor for critic updates', default=0.75)
-    parser.add_argument('--tau', help='soft target update parameter', default=0.01)
+    parser.add_argument('--gamma', help='discount factor for critic updates', default=0.99)
+    parser.add_argument('--tau', help='soft target update parameter', default=0.001)
     parser.add_argument('--buffer-size', help='max size of the replay buffer', default=1000000)
     parser.add_argument('--minibatch-size', help='size of minibatch for minibatch-SGD', default=64)
 
     # MountainCarContinuous-v0
     # Ant-v2
     # run parameters
-    parser.add_argument('--env', help='choose the gym env- tested on {Pendulum-v0}', default='Ant-v2')
-    parser.add_argument('--random-seed', help='random seed for repeatability', default=1108)
+    parser.add_argument('--env', help='choose the gym env- tested on {Pendulum-v0}', default='MountainCarContinuous-v0')
+    parser.add_argument('--random-seed', help='random seed for repeatability', default=1234)
     parser.add_argument('--max-episodes', help='max num of episodes to do while training', default=50000)
     parser.add_argument('--max-episode-len', help='max length of 1 episode', default=1000)
     parser.add_argument('--render-env', help='render the gym env', action='store_true')
@@ -74,11 +80,14 @@ if __name__ == '__main__':
     parser.add_argument('--monitor-dir', help='directory for storing gym results', default='./results/gym_ddpg')
     parser.add_argument('--summary-dir', help='directory for storing tensorboard info', default='./results/tf_ddpg')
 
+    parser.add_argument('--ckpts-dir', type=str, help='directory for saving checkpoints', default='./ckpts')
+    parser.add_argument('--ckpts_step', help='directory for saving checkpoints')
+
+    parser.set_defaults(ckpts_step=120)
     parser.set_defaults(render_env=True)
     parser.set_defaults(use_gym_monitor=True)
     
     args = vars(parser.parse_args())
-    
-    pp.pprint(args)
 
+    pp.pprint(args)
     main(args)

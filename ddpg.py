@@ -4,8 +4,18 @@ import numpy as np
 from replayBuffer import ReplayBuffer
 from utilities import build_summaries
 
+import os
+import sys
+
 #   Agent Training
 def train(sess, env, args, actor, critic, actor_noise):
+
+    # Define saver for saving model ckpts
+    model_name = str(env) + '.ckpt'
+    checkpoint_path = os.path.join(args['ckpts_dir'], model_name)        
+    if not os.path.exists(args['ckpts_dir']):
+        os.makedirs(args['ckpts_dir'])
+    saver = tf.compat.v1.train.Saver() 
 
     # Setup Summary
     summary_ops, summary_vars = build_summaries()
@@ -87,4 +97,10 @@ def train(sess, env, args, actor, critic, actor_noise):
 
                 print('| Reward: {:d} | Episode: {:d} | Qmax: {:.4f}'.format(int(ep_reward), \
                         i, (ep_ave_max_q / float(j))))
+
+                if (i+1 == int(args['ckpts_step'])):
+                    saver.save(sess, checkpoint_path, i)
+                    sys.stdout.write('Checkpoint saved \n')
+                    sys.stdout.flush()
+
                 break
