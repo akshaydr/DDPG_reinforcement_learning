@@ -3,16 +3,59 @@ import  numpy as np
 import tensorflow as tf
 from actorCritic import ActorNetwork
 
-def test(sess, env, args, actor, critic, actor_noise):
-    env = gym.make(args['env'])
-    np.random.seed(int(args['random_seed']))
-    tf.compat.v1.set_random_seed(int(args['random_seed']))
-    env.seed(int(args['random_seed']))
+import sys
+import os
 
-    state_dim = env.observation_space.shape[0]
-    action_dim = env.action_space.shape[0]
-    action_bound = env.action_space.high
+from replayBuffer import ReplayBuffer
+from utilities import build_summaries
+
+def test(sess, env, args, actor, actor_noise):
+    # Load ckpt file
+    loader = tf.compat.v1.train.Saver()    
+
+    if args['ckpts_file'] is not None:
+        ckpt = args['ckpts_dir'] + '/' + args['ckpts_file']  
+    else:
+        ckpt = tf.train.latest_checkpoint(args['ckpts_dir'])
     
-    actor = ActorNetwork(sess, state_dim, action_dim, action_bound,
-                        float(args['actor_lr']), float(args['tau']),
-                        int(args['minibatch_size']))
+    loader.restore(sess, ckpt)
+    sys.stdout.write('%s restored.\n\n' % ckpt)
+    sys.stdout.flush() 
+
+    ckpt_split = ckpt.split('-')
+    train_ep = ckpt_split[-1]
+    
+    # Setup Summary
+    summary_ops, summary_vars = build_summaries()
+
+    sess.run(tf.compat.v1.global_variables_initializer())
+    writer = tf.compat.v1.summary.FileWriter(args['summary_dir'], sess.graph)
+
+    for i in range(int(args['max_episodes'])):
+        s = env.reset()
+        ep_reward = 0
+
+        for j in range(int(args['max_episode_len'])):
+            if args['render_env']:
+                env.render()
+
+            a = actor.predict(np.reshape(s, (1, actor.s_dim))) + actor_noise()
+            s2, r, terminal, _ = env.step(a[0])
+
+            s = s2
+            ep_reward += r
+
+            if terminal:
+                if (summary_ops != None):
+                    summary_str = sess.run(summary_ops, feed_dict={
+                        summary_vars[0]: ep_reward,
+                    })
+
+                    writer.add_summary(summary_str, i)
+                    writer.flush()
+
+                print('| Reward: {:d} | Episode: {:d}'.format(int(ep_reward), \
+                        i))
+
+                break
+            
