@@ -53,7 +53,7 @@ def test(sess, env, args, actor, actor_noise):
 
                     writer.add_summary(summary_str, i)
                     writer.flush()
-
+                
                 print('| Reward: {:d} | Episode: {:d}'.format(int(ep_reward), \
                         i))
 

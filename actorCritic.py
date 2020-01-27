@@ -140,7 +140,6 @@ class CriticNetwork(object):
         # w.r.t. that action. Each output is independent of all
         # actions except for one.
         self.action_grads = tf.compat.v1.gradients(self.out, self.action)
-        print (self.action_grads)
 
 
     def create_critic_network(self):

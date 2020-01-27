@@ -50,12 +50,12 @@ def main(args):
             else:
                 env = wrappers.Monitor(env, args['monitor_dir'], force=True)
 
-        if args['train']:
-            print("Training Mode")
-            train(sess, env, args, actor, critic, actor_noise)
-        else:
-            print("Testing Mode")
-            test(sess, env, args, actor, actor_noise)
+        # if args['train']:
+        print("Training Mode")
+        train(sess, env, args, actor, critic, actor_noise)
+        # else:
+        #     print("Testing Mode")
+        #     test(sess, env, args, actor, actor_noise)
 
         if args['use_gym_monitor']:
             env.monitor.close()
@@ -86,14 +86,16 @@ if __name__ == '__main__':
     parser.add_argument('--ckpts-dir', type=str, help='directory for saving checkpoints', default='./ckpts')
     parser.add_argument('--ckpts_step', help='directory for saving checkpoints')
 
+    # MountainCarContinuous-v0.ckpt-119
+    # Ant-v2.ckpt-1300
+    parser.add_argument('--load_ckpts', help='Choose whether to train or test the system', action='store_true')
     parser.add_argument('--ckpts_file', type= str, help='directory for loading checkpoints', default='MountainCarContinuous-v0.ckpt-119')
 
-    parser.add_argument('--train', help='Choose whether to train or test the system', action='store_true')
 
-    parser.set_defaults(ckpts_step=120)
-    parser.set_defaults(train=True)
-    parser.set_defaults(render_env=True)
-    parser.set_defaults(use_gym_monitor=True)
+    parser.set_defaults(ckpts_step=100)
+    parser.set_defaults(load_ckpts=True)
+    parser.set_defaults(render_env=False)
+    parser.set_defaults(use_gym_monitor=False)
     
     args = vars(parser.parse_args())
 

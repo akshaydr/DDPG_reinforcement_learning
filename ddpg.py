@@ -9,6 +9,27 @@ import sys
 
 #   Agent Training
 def train(sess, env, args, actor, critic, actor_noise):
+    # Load ckpt file
+    if args['load_ckpts']:
+        print("Loading checkpoints")
+        loader = tf.compat.v1.train.Saver()    
+        if args['ckpts_file'] is not None:
+            ckpt = args['ckpts_dir'] + '/' + args['ckpts_file']  
+        else:
+            ckpt = tf.train.latest_checkpoint(args['ckpts_dir'])
+        loader.restore(sess, ckpt)
+        sys.stdout.write('%s restored.\n\n' % ckpt)
+        sys.stdout.flush() 
+        ckpt_split = ckpt.split('-')
+        train_ep = ckpt_split[-1]
+    else:
+        print("Starting new training")
+        sess.run(tf.compat.v1.global_variables_initializer())
+        # Initialize target network weights
+        actor.update_target_network()
+        critic.update_target_network()
+        train_ep = 0
+    
 
     # Define saver for saving model ckpts
     model_name = str(env) + '.ckpt'
@@ -20,17 +41,17 @@ def train(sess, env, args, actor, critic, actor_noise):
     # Setup Summary
     summary_ops, summary_vars = build_summaries()
 
-    sess.run(tf.compat.v1.global_variables_initializer())
+    # sess.run(tf.compat.v1.global_variables_initializer())
     writer = tf.compat.v1.summary.FileWriter(args['summary_dir'], sess.graph)
 
     # Initialize target network weights
-    actor.update_target_network()
-    critic.update_target_network()
+    # actor.update_target_network()
+    # critic.update_target_network()
 
     # Initialize replay memory
     replay_buffer = ReplayBuffer(int(args['buffer_size']), int(args['random_seed']))
 
-    for i in range(int(args['max_episodes'])):
+    for i in range(int(train_ep) + 1, int(args['max_episodes']) + 1):
 
         s = env.reset()
         ep_reward = 0
@@ -97,10 +118,9 @@ def train(sess, env, args, actor, critic, actor_noise):
 
                 print('| Reward: {:d} | Episode: {:d} | Qmax: {:.4f}'.format(int(ep_reward), \
                         i, (ep_ave_max_q / float(j))))
-
-                if (i+1 == int(args['ckpts_step'])):
-                    saver.save(sess, checkpoint_path, i)
-                    sys.stdout.write('Checkpoint saved \n')
-                    sys.stdout.flush()
-
                 break
+
+        if (i % int(args['ckpts_step']) == 0):
+            saver.save(sess, checkpoint_path, i)
+            sys.stdout.write('Checkpoint saved \n')
+            sys.stdout.flush()
