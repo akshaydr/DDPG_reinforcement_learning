@@ -28,8 +28,7 @@ def test(sess, env, args, actor, actor_noise):
     # Setup Summary
     summary_ops, summary_vars = build_summaries()
 
-    sess.run(tf.compat.v1.global_variables_initializer())
-    writer = tf.compat.v1.summary.FileWriter(args['summary_dir'], sess.graph)
+    # sess.run(tf.compat.v1.global_variables_initializer())
 
     for i in range(int(args['max_episodes'])):
         s = env.reset()
@@ -39,7 +38,7 @@ def test(sess, env, args, actor, actor_noise):
             if args['render_env']:
                 env.render()
 
-            a = actor.predict(np.reshape(s, (1, actor.s_dim))) + actor_noise()
+            a = actor.predict(np.reshape(s, (1, actor.s_dim)))
             s2, r, terminal, _ = env.step(a[0])
 
             s = s2

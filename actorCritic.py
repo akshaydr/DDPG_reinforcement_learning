@@ -150,7 +150,7 @@ class CriticNetwork(object):
         net = Dense(400, activation='relu')(inputs)
         net = layers.BatchNormalization()(net)
 
-        a_layer = Dense(400, activation='linear')(action)
+        a_layer = Dense(400, activation='relu')(action)
         a_layer = layers.BatchNormalization()(a_layer)
 
         hidden = Add()([a_layer, net])

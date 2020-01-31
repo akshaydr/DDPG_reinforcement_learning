@@ -7,6 +7,8 @@ from utilities import build_summaries
 import os
 import sys
 
+import csv
+
 #   Agent Training
 def train(sess, env, args, actor, critic, actor_noise):
     # Load ckpt file
@@ -106,6 +108,8 @@ def train(sess, env, args, actor, critic, actor_noise):
             s = s2
             ep_reward += r
 
+            csv_write = [i, ep_reward, ep_ave_max_q]
+
             if terminal:
                 if (summary_ops != None):
                     summary_str = sess.run(summary_ops, feed_dict={
@@ -124,3 +128,7 @@ def train(sess, env, args, actor, critic, actor_noise):
             saver.save(sess, checkpoint_path, i)
             sys.stdout.write('Checkpoint saved \n')
             sys.stdout.flush()
+
+        with open('results/rewards.csv', mode='a', newline='') as output_file:
+            output_writer = csv.writer(output_file, lineterminator='\n')
+            output_writer.writerow(csv_write)
