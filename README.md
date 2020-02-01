@@ -13,10 +13,8 @@ The DDPG has two networks which are actor and critic as shown in the figure. The
 ![Mountain Car Continuous](mountainCar.gif)
 
 ### Applied Hyper Parameters:
-\begin{itemize}
-    \item ACTOR LEARNING RATE: 0.0001
-    \item CRITIC LEARNING RATE: 0.001
-    \item CRITIC UPDATE DISCOUNT FACTOR: 0.99
-    \item SOFT TARGET UPDATE PARAMETER: 0.01
-    \item MINI-BATCH SIZE: 64
-\end{itemize}
+    ACTOR LEARNING RATE: 0.0001
+    CRITIC LEARNING RATE: 0.001
+    CRITIC UPDATE DISCOUNT FACTOR: 0.99
+    SOFT TARGET UPDATE PARAMETER: 0.01
+    MINI-BATCH SIZE: 64
