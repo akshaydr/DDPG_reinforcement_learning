@@ -33,6 +33,5 @@ def build_summaries():
 
     summary_vars = [episode_reward, episode_ave_max_q]
     summary_ops = tf.compat.v1.summary.merge_all()
-    print(summary_ops)
     return summary_ops, summary_vars
 

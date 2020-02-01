@@ -64,9 +64,9 @@ if __name__ == '__main__':
     # MountainCarContinuous-v0
     # Ant-v2
     # run parameters
-    parser.add_argument('--env', help='choose the gym env- tested on {Pendulum-v0}', default='MountainCarContinuous-v0')
+    parser.add_argument('--env', help='choose the gym env- tested on {Pendulum-v0}', default='Ant-v2')
     parser.add_argument('--random-seed', help='random seed for repeatability', default=1997)
-    parser.add_argument('--max-episodes', help='max num of episodes to do while training', default=500)
+    parser.add_argument('--max-episodes', help='max num of episodes to do while training', default=600)
     parser.add_argument('--max-episode-len', help='max length of 1 episode', default=1000)
     parser.add_argument('--render-env', help='render the gym env', action='store_true')
 
@@ -76,15 +76,15 @@ if __name__ == '__main__':
     # MountainCarContinuous-v0.ckpt-119
     # Ant-v2.ckpt-1300
     parser.add_argument('--load_ckpts', help='Choose whether to train or test the system', action='store_true')
-    parser.add_argument('--ckpts_file', type= str, help='directory for loading checkpoints', default='MountainCarContinuous-v0.ckpt-400')
+    parser.add_argument('--ckpts_file', type= str, help='directory for loading checkpoints', default='MountainCarContinuous-v0.ckpt-119')
 
     parser.add_argument('--train', help='Choose whether to train or test the system', action='store_true')
 
     parser.set_defaults(ckpts_step=200)
 
-    parser.set_defaults(train=False)
-    parser.set_defaults(load_ckpts=True)
-    parser.set_defaults(render_env=True)
+    parser.set_defaults(train=True)
+    parser.set_defaults(load_ckpts=False)
+    parser.set_defaults(render_env=False)
     
     args = vars(parser.parse_args())
 

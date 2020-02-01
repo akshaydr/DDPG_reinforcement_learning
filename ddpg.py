@@ -44,7 +44,6 @@ def train(sess, env, args, actor, critic, actor_noise):
     summary_ops, summary_vars = build_summaries()
 
     # sess.run(tf.compat.v1.global_variables_initializer())
-    writer = tf.compat.v1.summary.FileWriter(args['summary_dir'], sess.graph)
 
     # Initialize target network weights
     # actor.update_target_network()
