@@ -54,19 +54,19 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='provide arguments for DDPG agent')
 
     # agent parameters
-    parser.add_argument('--actor-lr', help='actor network learning rate', default=0.0001)
+    parser.add_argument('--actor-lr', help='actor network learning rate', default=0.001)
     parser.add_argument('--critic-lr', help='critic network learning rate', default=0.001)
     parser.add_argument('--gamma', help='discount factor for critic updates', default=0.99)
     parser.add_argument('--tau', help='soft target update parameter', default=0.01)
     parser.add_argument('--buffer-size', help='max size of the replay buffer', default=1000000)
-    parser.add_argument('--minibatch-size', help='size of minibatch for minibatch-SGD', default=64)
+    parser.add_argument('--minibatch-size', help='size of minibatch for minibatch-SGD', default=128)
 
     # MountainCarContinuous-v0
     # Ant-v2
     # run parameters
     parser.add_argument('--env', help='choose the gym env- tested on {Pendulum-v0}', default='Ant-v2')
     parser.add_argument('--random-seed', help='random seed for repeatability', default=1997)
-    parser.add_argument('--max-episodes', help='max num of episodes to do while training', default=600)
+    parser.add_argument('--max-episodes', help='max num of episodes to do while training', default=1200)
     parser.add_argument('--max-episode-len', help='max length of 1 episode', default=1000)
     parser.add_argument('--render-env', help='render the gym env', action='store_true')
 
@@ -76,15 +76,15 @@ if __name__ == '__main__':
     # MountainCarContinuous-v0.ckpt-119
     # Ant-v2.ckpt-1300
     parser.add_argument('--load_ckpts', help='Choose whether to train or test the system', action='store_true')
-    parser.add_argument('--ckpts_file', type= str, help='directory for loading checkpoints', default='MountainCarContinuous-v0.ckpt-119')
+    parser.add_argument('--ckpts_file', type= str, help='directory for loading checkpoints', default='Ant-v2.ckpt-800')
 
     parser.add_argument('--train', help='Choose whether to train or test the system', action='store_true')
 
     parser.set_defaults(ckpts_step=200)
 
     parser.set_defaults(train=True)
-    parser.set_defaults(load_ckpts=False)
-    parser.set_defaults(render_env=False)
+    parser.set_defaults(load_ckpts=True)
+    parser.set_defaults(render_env=True)
     
     args = vars(parser.parse_args())
 

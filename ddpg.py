@@ -116,9 +116,6 @@ def train(sess, env, args, actor, critic, actor_noise):
                         summary_vars[1]: ep_ave_max_q / float(j)
                     })
 
-                    writer.add_summary(summary_str, i)
-                    writer.flush()
-
                 print('| Reward: {:d} | Episode: {:d} | Qmax: {:.4f}'.format(int(ep_reward), \
                         i, (ep_ave_max_q / float(j))))
                 break
@@ -128,6 +125,6 @@ def train(sess, env, args, actor, critic, actor_noise):
             sys.stdout.write('Checkpoint saved \n')
             sys.stdout.flush()
 
-        with open('results/rewards.csv', mode='a', newline='') as output_file:
+        with open('result/rewards.csv', mode='a', newline='') as output_file:
             output_writer = csv.writer(output_file, lineterminator='\n')
             output_writer.writerow(csv_write)
